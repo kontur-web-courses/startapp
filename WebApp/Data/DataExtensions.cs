@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,10 @@ namespace WebApp.Data
                 try
                 {
                     var env = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
-                    if (env.IsDevelopment())
+                    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+
+                    if (env.IsDevelopment()
+                        && string.IsNullOrEmpty(configuration.GetConnectionString("SqlServerConnection")))
                     {
                         scope.ServiceProvider.GetRequiredService<ApplicationDbContext>().Database.Migrate();
                     }
